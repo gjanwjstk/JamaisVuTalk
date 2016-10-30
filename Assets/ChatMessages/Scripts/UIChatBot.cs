@@ -31,10 +31,29 @@ public class UIChatBot : MonoBehaviour
 		{
 			Npc_Messages[i] = Dic_CSV_Data[i+5]["Log"].ToString();
 		}
+		Invoke("Reply01", 2f);
+		Invoke("Reply02", 3f);
+		Invoke("Reply03", 4f);
+		Invoke("Reply04", 4f);
 	}
 
 	//--------------METHOD--------------------//
-
+	void Reply01()
+	{
+		Reply(Npc_Messages[0]);
+	}
+	void Reply02()
+	{
+		Reply(Npc_Messages[1]);
+	}
+	void Reply03()
+	{
+		Reply(Npc_Messages[2]);
+	}
+	void Reply04()
+	{
+		Reply(Npc_Messages[3]);
+	}
 	/// <summary>
 	/// Add a new message to the chat from the bot.봇이 가지고 
 	/// </summary>

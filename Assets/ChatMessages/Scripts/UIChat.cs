@@ -29,7 +29,7 @@ public class UIChat : MonoBehaviour
 	public string[] Player_Messages = new string[3];
 
 	private List<UIChatMessageItem> _messageItems;
-	//------------EVENTMETHOD-----------------//
+
 	//------------EVENTMETHOD-----------------//
 	void Start()
 	{
@@ -41,11 +41,7 @@ public class UIChat : MonoBehaviour
 			Player_Messages[i] = Dic_CSV_Data[i+10]["Log"].ToString();
 		}
 	}
-	void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Return))
-			SendMessage();
-	}
+	
 	//--------------METHOD--------------------//
 	/// <summary>
 	/// Input field가 공란이 아닐 때 쓰인 메시지를 보냅니다.
