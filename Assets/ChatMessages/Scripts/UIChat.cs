@@ -77,6 +77,11 @@ public class UIChat : MonoBehaviour
         UIChatMessageItem messageItem =  CreateMessageItem(_vLayout, playerMessage);
         messageItem.SetMessage(message);
 
+		if ( playerMessage == false )
+		{
+			//분기가 있는지 없는지를 확인해서
+			//있으면 플레이어의 분기를 개수만큼 플레이어 선택지 프리팹을 
+		}
 		//_messageItems이 null일때 초기화
 		if (_messageItems == null)
             _messageItems = new List<UIChatMessageItem>();
