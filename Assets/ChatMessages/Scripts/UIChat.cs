@@ -15,6 +15,8 @@ public class UIChat : MonoBehaviour
 	[SerializeField] private UIChatMessageItem _messageItemPlayerPrefab;
 	[Header("NPC 메시지 프리팹")]
 	[SerializeField] private UIChatMessageItem _messageItemOtherPrefab;
+	[Header("분기 프리팹")]
+	[SerializeField]private UIChatMessageItem _messageItemRamifyPrefab;
 
 	[Header("메시지를 자식으로 두는 레이아웃 프리팹")]
     [SerializeField] private VerticalLayoutGroup _vLayout;
@@ -26,19 +28,33 @@ public class UIChat : MonoBehaviour
 	[SerializeField] private UIChatBot _bot;
 
 	[Header("플레이어 메시지 스트링")]
-	public string[] Player_Messages = new string[3];
+	public string[] Message_Log = new string[20];
+	private string[] Message_Name = new string[20];
+	private string[] Message_IsRamify = new string[20];
+
+	private int TextCount;
 
 	private List<UIChatMessageItem> _messageItems;
 
 	//------------EVENTMETHOD-----------------//
 	void Start()
 	{
+		TextCount = 0;
 		//CSVReader 클래스가 test2를 읽었을 때의 Dictionary값을 가져옵니다.
 		List<Dictionary<string, object>> Dic_CSV_Data = CSVReader.Read("test2");
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 20; i++)
 		{
-			Player_Messages[i] = Dic_CSV_Data[i+10]["Log"].ToString();
+			Message_Log[i] = Dic_CSV_Data[i]["Log"].ToString();
+			Message_Name[i] = Dic_CSV_Data[i]["Name"].ToString();
+			Message_IsRamify[i] = Dic_CSV_Data[i]["IsRamify"].ToString();
+		}
+		StartCoroutine(Co_AddMessage());
+		print(Message_IsRamify[0]);
+		for (int i = 0; i < Message_IsRamify.Length; i++)
+		{
+			if (Message_IsRamify[i].ToString() == "TRUE")
+				print("hd");
 		}
 	}
 	
@@ -66,7 +82,17 @@ public class UIChat : MonoBehaviour
 		SendMessage();
 	}
 	#endregion
-
+	IEnumerator Co_AddMessage()
+	{
+		for (int i = 0; i < 13; i++)
+		{
+			yield return new WaitForSeconds(1f);
+			if (Message_Name[i].ToString() == "도련")
+				AddMessage(Message_Log[i], true);
+			if (Message_Name[i].ToString() == "서린")
+				AddMessage(Message_Log[i], false);
+		}
+	}
 	/// <summary>
 	/// 메시지 아이템에 UI를 추가합니다.
 	/// </summary>
@@ -88,8 +114,8 @@ public class UIChat : MonoBehaviour
 
         _messageItems.Add(messageItem);
 
-        if (playerMessage)
-            _bot.Reply(message);
+        //if (playerMessage)
+        //    _bot.Reply(message);
     }
 
 	/// <summary>
@@ -99,21 +125,26 @@ public class UIChat : MonoBehaviour
 	/// <param name="playerMessage">플레이어에게서 온 메시지인지 아닌지.</param>
 	/// <returns></returns>
 	private UIChatMessageItem CreateMessageItem(VerticalLayoutGroup vLayout, bool playerMessage)
-    {
+    {	
 		//플레이어가 보내는거면 _messageItemPlayerPrefab.gameObject, 
 		//플레이어가 보내는게 아니면 _messageItemOtherPrefab.gameObject를 prefab에 넣는다.
 		GameObject prefab = playerMessage ? _messageItemPlayerPrefab.gameObject : _messageItemOtherPrefab.gameObject;
-
-		//위의 prefab을 position rotation 0 0 0으로 하는 instance를 생성한다.
-        GameObject instance = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
+		if (Message_IsRamify[TextCount].ToString() == "TRUE")
+			prefab = _messageItemRamifyPrefab.gameObject;
+			//위의 prefab을 position rotation 0 0 0으로 하는 instance를 생성한다.
+		GameObject instance = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
 
 		//생성한 instance의 부모를 transform형 vLayout을 둡니다.
         instance.transform.SetParent(vLayout.transform);
 		//instance의 localScale을 1,1,1로 맞춥니다.
         instance.transform.localScale = Vector3.one;
-        instance.SetActive(true);
 
+	
+
+        instance.SetActive(true);
+		TextCount++;
 		//instance가 가지고 있는 UIChatMessageItem 컴포넌트를 반환합니다.
 		return instance.GetComponent<UIChatMessageItem>();
+		
     }
 }

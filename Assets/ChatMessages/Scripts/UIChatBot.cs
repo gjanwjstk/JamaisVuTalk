@@ -31,10 +31,10 @@ public class UIChatBot : MonoBehaviour
 		{
 			Npc_Messages[i] = Dic_CSV_Data[i+5]["Log"].ToString();
 		}
-		Invoke("Reply01", 2f);
-		Invoke("Reply02", 3f);
-		Invoke("Reply03", 4f);
-		Invoke("Reply04", 4f);
+		//Invoke("Reply01", 2f);
+		//Invoke("Reply02", 3f);
+		//Invoke("Reply03", 4f);
+		//Invoke("Reply04", 4f);
 	}
 
 	//--------------METHOD--------------------//
