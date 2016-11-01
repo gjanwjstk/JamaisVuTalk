@@ -34,6 +34,8 @@ public class UIChat : MonoBehaviour
 
 	private int TextCount;
 
+	public GameObject RamifyObject;
+
 	private List<UIChatMessageItem> _messageItems;
 
 	//------------EVENTMETHOD-----------------//
@@ -86,7 +88,7 @@ public class UIChat : MonoBehaviour
 	{
 		for (int i = 0; i < 13; i++)
 		{
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(0.2f);
 			if (Message_Name[i].ToString() == "도련")
 				AddMessage(Message_Log[i], true);
 			if (Message_Name[i].ToString() == "서린")
@@ -100,7 +102,7 @@ public class UIChat : MonoBehaviour
 	/// <param name="playerMessage">플레이어에게서 온 메시지인지 아닌지</param>
 	public void AddMessage(string message, bool playerMessage)
     {
-        UIChatMessageItem messageItem =  CreateMessageItem(_vLayout, playerMessage);
+        UIChatMessageItem messageItem = CreateMessageItem(_vLayout, playerMessage);
         messageItem.SetMessage(message);
 
 		if ( playerMessage == false )
@@ -117,7 +119,6 @@ public class UIChat : MonoBehaviour
         //if (playerMessage)
         //    _bot.Reply(message);
     }
-
 	/// <summary>
 	/// 메시지를 생성하고 레이아웃에 넣는 함수
 	/// </summary>
@@ -129,22 +130,25 @@ public class UIChat : MonoBehaviour
 		//플레이어가 보내는거면 _messageItemPlayerPrefab.gameObject, 
 		//플레이어가 보내는게 아니면 _messageItemOtherPrefab.gameObject를 prefab에 넣는다.
 		GameObject prefab = playerMessage ? _messageItemPlayerPrefab.gameObject : _messageItemOtherPrefab.gameObject;
+		
+		//선택지가 있는 대화문이면
 		if (Message_IsRamify[TextCount].ToString() == "TRUE")
 			prefab = _messageItemRamifyPrefab.gameObject;
-			//위의 prefab을 position rotation 0 0 0으로 하는 instance를 생성한다.
-		GameObject instance = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
-
-		//생성한 instance의 부모를 transform형 vLayout을 둡니다.
-        instance.transform.SetParent(vLayout.transform);
-		//instance의 localScale을 1,1,1로 맞춥니다.
-        instance.transform.localScale = Vector3.one;
-
-	
-
-        instance.SetActive(true);
-		TextCount++;
-		//instance가 가지고 있는 UIChatMessageItem 컴포넌트를 반환합니다.
-		return instance.GetComponent<UIChatMessageItem>();
 		
-    }
+			//위의 prefab을 position rotation 0 0 0으로 하는 instance를 생성한다.
+			GameObject instance = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
+			//생성한 instance의 부모를 transform형 vLayout을 둡니다.
+			instance.transform.SetParent(vLayout.transform);
+
+			//instance의 localScale을 1,1,1로 맞춥니다.
+			instance.transform.localScale = Vector3.one;
+			instance.SetActive(true);
+			TextCount++;
+			//instance가 가지고 있는 UIChatMessageItem 컴포넌트를 반환합니다.
+			return instance.GetComponent<UIChatMessageItem>();
+	}
+	void RemoveAllRamify()
+	{
+		hand = GameObject.Find("Monster/Arm/Hand");
+	}
 }
