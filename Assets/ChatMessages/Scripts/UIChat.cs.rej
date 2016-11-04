@@ -1,0 +1,20 @@
+diff a/Assets/ChatMessages/Scripts/UIChat.cs b/Assets/ChatMessages/Scripts/UIChat.cs	(rejected hunks)
+@@ -82,7 +82,17 @@
+ 		SendMessage();
+ 	}
+ 	#endregion
+-
++	IEnumerator Co_AddMessage()
++	{
++		for (int i = 0; i < 13; i++)
++		{
++			yield return new WaitForSeconds(1f);
++			if (Message_Name[i].ToString() == "도련")
++				AddMessage(Message_Log[i], true);
++			if (Message_Name[i].ToString() == "서린")
++				AddMessage(Message_Log[i], false);
++		}
++	}
+ 	/// <summary>
+ 	/// 메시지 아이템에 UI를 추가합니다.
+ 	/// </summary>
