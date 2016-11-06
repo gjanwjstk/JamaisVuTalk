@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 //------수정 시간: 2016년 10월 30일--------//
 
-
 public class UIChat : MonoBehaviour
 {
 	//--------------FIELD---------------------//
@@ -21,12 +20,14 @@ public class UIChat : MonoBehaviour
 	[SerializeField]
 	private UISelectionGroup _messageItemRamifyPrefab;
 
-	private int RamifyABC;
 	private bool ramifyA_Selected;
 	private bool ramifyB_Selected;
 	private bool ramifyC_Selected;
+    private string selectedARamifystring;
+    private string selectedBRamifystring;
+    private string selectedCRamifystring;
 
-	private GameObject RamifyA;
+    private GameObject RamifyA;
 
 	[Header("메시지를 자식으로 두는 레이아웃 프리팹")]
 	[SerializeField]
@@ -54,6 +55,7 @@ public class UIChat : MonoBehaviour
 	//------------EVENTMETHOD-----------------//
 	void Start()
 	{
+        //리스트 초기화
 		if (_messageItemsR == null)
 			_messageItemsR = new List<UISelectionGroup>();
 		if (_messageItems == null)
@@ -64,17 +66,9 @@ public class UIChat : MonoBehaviour
 		ramifyC_Selected = false;
 		//몇번째 대사인지 확인하기 위한 카운트값 초기화
 		TextCount = 0;
-		RamifyABC = 0;
 		//CSV 파일 불러오는 메소드 실행
 		ReadCsvFile();
 		StartCoroutine(Co_AddMessage());
-	}
-	void Update()
-	{
-		if (ramifyA_Selected)
-		{
-
-		}
 	}
 	//--------------METHOD--------------------//
 	IEnumerator Co_AddMessage()
@@ -82,19 +76,28 @@ public class UIChat : MonoBehaviour
 		for (int i = 0; i < 11; i++)
 		{
 			yield return new WaitForSeconds(0.2f);
+            //주인공이 말하고 분기가 아닐 때
 			if ((Message_Name[i].ToString() == "도련") && (Message_IsRamify[i].ToString() == "FALSE"))
 			{
-				print("Name::도련 ,"+ "IsRamify::"+ Message_IsRamify[i] + ", Log:: " + i +" ::" + Message_Log[i]);
+                //주인공쪽(파란색)으로 로그를 생성
 				AddMessage(Message_Log[i], true);
+				print("Name::도련 ,"+ "IsRamify::"+ Message_IsRamify[i] + ", Log:: " + i +" ::" + Message_Log[i]);
 			}
+            //주인공이 말하고 분기일 때
 			if ((Message_Name[i].ToString() == "도련")&&(Message_IsRamify[i].ToString() == "TRUE"))
 			{
+                //분기용 함수 생성
 				AddMessageForRamify(Message_Log[i], Message_Log2[i], Message_Log3[i]);
-			}
-			if (Message_Name[i].ToString() == "서린")
+                print("Name::도련 ," + "IsRamify::" + Message_IsRamify[i] + ", Log:: " + i + " ::" + Message_Log[i]);
+                print("Name::도련 ," + "IsRamify::" + Message_IsRamify[i] + ", Log:: " + i + " ::" + Message_Log2[i]);
+                print("Name::도련 ," + "IsRamify::" + Message_IsRamify[i] + ", Log:: " + i + " ::" + Message_Log3[i]);
+            }
+            //NPC가 말할 때
+            if (Message_Name[i].ToString() == "서린")
 			{
-				print("Name::서린 ," + "IsRamify::" + Message_IsRamify[i] + ", Log:: " + i + " ::" + Message_Log[i]);
+                //NPC쪽(회색)쪽으로 로그를 생성
 				AddMessage(Message_Log[i], false);
+				print("Name::서린 ," + "IsRamify::" + Message_IsRamify[i] + ", Log:: " + i + " ::" + Message_Log[i]);
 			}	
 		}
 	}
@@ -104,7 +107,10 @@ public class UIChat : MonoBehaviour
 		{
 			UISelectionGroup messageItemR = CreateRamifyMessageItem(_vLayout);
 			messageItemR.SetText(message, message1, message2);
-			_messageItemsR.Add(messageItemR);
+            selectedARamifystring = message;
+            selectedBRamifystring = message1;
+            selectedCRamifystring = message2;
+            _messageItemsR.Add(messageItemR);
 		}
 	}
 
@@ -122,7 +128,6 @@ public class UIChat : MonoBehaviour
 	{
 		print("분기가 발생.CreateRamifyMessageItem를 실행합니다");
 		GameObject prefab = _messageItemRamifyPrefab.gameObject;
-		RamifyABC++;
 
 		GameObject instance = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
 		//생성한 instance의 부모를 transform형 vLayout을 둡니다.
@@ -132,7 +137,8 @@ public class UIChat : MonoBehaviour
 		instance.transform.localScale = Vector3.one;
 		instance.SetActive(true);
 		TextCount++;
-		return instance.GetComponent<UISelectionGroup>();
+        //UISelectionGroup 컴포넌트를 반환
+        return instance.GetComponent<UISelectionGroup>();
 	}
 
 	/// <summary>
@@ -167,16 +173,18 @@ public class UIChat : MonoBehaviour
 	public void SelectRamifyA()
 	{
 		ramifyA_Selected = true;
-		print("A 선택지를 선택했습니다!");
+        AddMessage(selectedARamifystring, true);
 	}
 	public void SelectRamifyB()
 	{
 		ramifyB_Selected = true;
-	}
+        AddMessage(selectedBRamifystring, true);
+    }
 	public void SelectRamifyC()
 	{
 		ramifyC_Selected = true;
-	}
+        AddMessage(selectedCRamifystring, true);
+    }
 	private void ReadCsvFile()
 	{
 		//CSVReader 클래스가 test2를 읽었을 때의 Dictionary값을 가져옵니다.
