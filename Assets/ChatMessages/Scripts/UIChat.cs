@@ -112,6 +112,7 @@ public class UIChat : MonoBehaviour
 
 	public void AddMessage(string message, bool playerMessage)
 	{
+        //선택지가 아닐 경우에 
 		if (Message_IsRamify[TextCount].ToString() == "FALSE")
 		{
 			UIChatMessageItem messageItem = CreateMessageItem(_vLayout, playerMessage);
