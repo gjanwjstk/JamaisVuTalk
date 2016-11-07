@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-//------수정 시간: 2016년 10월 30일--------//
+    //------수정 시간: 2016년 11월 07일--------//
 
 public class UIChat : MonoBehaviour
 {
@@ -37,10 +37,6 @@ public class UIChat : MonoBehaviour
 	[SerializeField]
 	private InputField _inputField;
 
-	//[Header("_bot.Reply를 사용하기 위한 class형")]
-	//[SerializeField]
-	//private UIChatBot _bot;
-
 	[Header("플레이어 메시지 스트링")]
 	public string[] Message_Log = new string[20];
 	public string[] Message_Log2 = new string[20];
@@ -68,12 +64,12 @@ public class UIChat : MonoBehaviour
 		TextCount = 0;
 		//CSV 파일 불러오는 메소드 실행
 		ReadCsvFile();
-		StartCoroutine(Co_AddMessage());
+		StartCoroutine(Co_AddMessage(0, 11));
 	}
 	//--------------METHOD--------------------//
-	IEnumerator Co_AddMessage()
+	IEnumerator Co_AddMessage(int startLog, int lastLog)
 	{
-		for (int i = 0; i < 11; i++)
+		for (int i = startLog; i < lastLog; i++)
 		{
 			yield return new WaitForSeconds(0.2f);
             //주인공이 말하고 분기가 아닐 때
