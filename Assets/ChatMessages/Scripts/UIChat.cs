@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class UIChat : MonoBehaviour
 {
     //--------------FIELD---------------------//
-    public int logLength = 45;
+    public int logLength;
 
 
     [Header("플레이어 메시지 프리팹")]
@@ -201,7 +201,7 @@ public class UIChat : MonoBehaviour
         List<Dictionary<string, object>> Dic_CSV_Data = CSVReader.Read("test2");
 
         //CSV 파일에서 Log, Name, IsRamify 3개를 20개씩 불러옵니다.
-        for (int i = 0; i < 45; i++)
+        for (int i = 0; i < logLength; i++)
         {
             Message_Log[i] = Dic_CSV_Data[i]["Log1"].ToString();
             Message_Log2[i] = Dic_CSV_Data[i]["Log2"].ToString();
