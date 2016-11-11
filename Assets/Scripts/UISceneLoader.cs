@@ -5,7 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class UISceneLoader : MonoBehaviour
 {
-    public void LoadFrindScene()
+    public void LoadFriendScene()
+    {
+        SceneManager.LoadScene("Friend");
+    }
+    public void LoadFrindSceneMaybe()
     {
         StartCoroutine(StartGameProcess());
     }
