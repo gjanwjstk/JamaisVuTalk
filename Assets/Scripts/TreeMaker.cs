@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TreeMaker : MonoBehaviour {
+public class TreeMaker : MonoBehaviour
+{
 
 	// Use this for initialization
 	void Start () {
