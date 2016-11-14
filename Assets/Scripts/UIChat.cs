@@ -5,7 +5,7 @@ using System.Collections.Generic;
 //VerticalLayoutGroup을 위한 namespace
 using UnityEngine.UI;
 
-    //------수정 시간: 2016년 11월 13일--------//
+    //------수정 시간: 2016년 11월 14일--------//
 
 public class UIChat : MonoBehaviour
 {
@@ -26,6 +26,9 @@ public class UIChat : MonoBehaviour
     //선택지가 나왔을 시 로그를 멈추기 위한 bool값
     private bool isRamifySelected;
 
+    private bool isRamifyASeleceted;
+    private bool isRamifyBSeleceted;
+    private bool isRamifyCSeleceted;
     //선택지용 string값
     private string selectedARamifystring;
     private string selectedBRamifystring;
@@ -46,8 +49,10 @@ public class UIChat : MonoBehaviour
     private string[] Message_Name;
     private string[] Message_IsRamify;
 
+    //코루틴 for문을 돌리기 위한 int값
     private int startLog;
 
+    //Addmessage에 사용되는 int값
     private int TextCount;
     private List<UIChatMessageItem> _messageItems = new List<UIChatMessageItem>();
     private List<UISelectionGroup> _messageItemsR = new List<UISelectionGroup>();
@@ -65,12 +70,15 @@ public class UIChat : MonoBehaviour
     //--------------METHOD--------------------//
     IEnumerator Co_AddMessage()
     {
+        //스크립트가 늘어나면 계속 추가(200)이후)
         for (int i = startLog; i < 200; i++)
-        {
+        {   //선택이 되어있을때(선택중일때에는 진행하지 않는다
             if (isRamifySelected)
             {
                 yield return new WaitForSeconds(0.2f);
+                //이름이 도련일때 채팅 올리기
                 AddPlayerConversation(i);
+                //이름이 서린일때 채팅 올리기
                 AddNpcConversation(i);
                 startLog++;
             }
@@ -99,11 +107,35 @@ public class UIChat : MonoBehaviour
     public void AddNpcConversation(int Log)
     {
         //NPC가 말할 때
-        if ((Message_Name[Log].ToString() == "서린"))
+        if ((Message_Name[Log].ToString() == "서린") && (Message_IsRamify[Log].ToString() == "FALSE"))
         {
             //NPC쪽(회색)쪽으로 로그를 생성
             AddMessage(Message_Log[Log], false);
             print("Name::서린 ," + "IsRamify::" + Message_IsRamify[Log] + ", Log:: " + Log + " ::" + Message_Log[Log]);
+        }
+        if ((Message_Name[Log].ToString() == "서린") && (Message_IsRamify[Log].ToString() == "TRUE"))
+        {
+            if(isRamifyASeleceted)
+            {
+                //NPC쪽(회색)쪽으로 로그를 생성
+                AddMessageForNpcRamify(Message_Log[Log], false);
+                print("Name::서린 ," + "IsRamify::" + Message_IsRamify[Log] + ", Log:: " + Log + " ::" + Message_Log[Log]);
+            }
+            if (isRamifyBSeleceted)
+            {
+                //NPC쪽(회색)쪽으로 로그를 생성
+                AddMessageForNpcRamify(Message_Log2[Log], false);
+                print("Name::서린 ," + "IsRamify::" + Message_IsRamify[Log] + ", Log:: " + Log + " ::" + Message_Log[Log]);
+            }
+            if (isRamifyCSeleceted)
+            {
+                //NPC쪽(회색)쪽으로 로그를 생성
+                AddMessageForNpcRamify(Message_Log3[Log], false);
+                print("Name::서린 ," + "IsRamify::" + Message_IsRamify[Log] + ", Log:: " + Log + " ::" + Message_Log[Log]);
+            }
+            isRamifyASeleceted = false;
+            isRamifyBSeleceted = false;
+            isRamifyCSeleceted = false;
         }
     }
     public void AddMessageForRamify(string message, string message1, string message2)
@@ -118,7 +150,15 @@ public class UIChat : MonoBehaviour
             _messageItemsR.Add(messageItemR);
         }
     }
-
+    public void AddMessageForNpcRamify(string message, bool playerMessage)
+    {
+        if (Message_IsRamify[TextCount].ToString() == "TRUE")
+        {
+            UIChatMessageItem messageItem = CreateMessageItem(_vLayout, playerMessage);
+            messageItem.SetMessage(message);
+            _messageItems.Add(messageItem);
+        }
+    }
     public void AddMessage(string message, bool playerMessage)
     {
         if (Message_IsRamify[TextCount].ToString() == "FALSE")
@@ -180,18 +220,21 @@ public class UIChat : MonoBehaviour
         isRamifySelected = true;
         AddMessage(selectedARamifystring, true);
         StartCoroutine(Co_AddMessage());
+        isRamifyASeleceted = true;
     }
     public void SelectRamifyB()
     {
         isRamifySelected = true;
         AddMessage(selectedBRamifystring, true);
         StartCoroutine(Co_AddMessage());
+        isRamifyBSeleceted = true;
     }
     public void SelectRamifyC()
     {
         isRamifySelected = true;
         AddMessage(selectedCRamifystring, true);
         StartCoroutine(Co_AddMessage());
+        isRamifyCSeleceted = true;
     }
     private void ReadCsvFile()
     {
@@ -210,6 +253,9 @@ public class UIChat : MonoBehaviour
     }
     private void Initializevariable()
     {
+        isRamifyASeleceted = false;
+        isRamifyBSeleceted = false;
+        isRamifyCSeleceted = false;
         //코루틴 for문돌리기위한 int변수
         startLog = 0;
 
