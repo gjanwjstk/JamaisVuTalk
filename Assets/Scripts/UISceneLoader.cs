@@ -1,37 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-
+using System.Collections.Generic;
 public class UISceneLoader : MonoBehaviour
 {
-    private bool isLoadFriendScene;
+    public List<GameObject> canvasList = new List<GameObject>(5);
+    //ChatList를 로드합니다.
     void Awake()
     {
-        isLoadFriendScene = false;
+        //Title 띄우기
+        canvasList[0].SetActive(true);
     }
-    public void LoadFriendScene()
+    public void TapTitleImage()
     {
-        if(!isLoadFriendScene)
+        SetCanvas(1);
+    }
+    public void TapOptionBtn()
+    {
+        SetCanvas(3);
+    }
+    public void TapChatBtn()
+    {
+        SetCanvas(4);
+    }
+    public void TapChatListBtn()
+    {
+        SetCanvas(2);
+    }
+    void SetCanvas(int activeCanvasNum)
+    {
+        for (int i = 0; i < 5; i++)
         {
-        StartCoroutine(StartGameProcess());
-            isLoadFriendScene = true;
+            if (i == activeCanvasNum) continue;
+            canvasList[i].SetActive(false);
         }
-    }
-    public void LoadFrindSceneMaybe()
-    {
-        
-    }
-    IEnumerator StartGameProcess()
-    {
-        yield return new WaitForSeconds(1f);
-        //다 끝날때까지 게임은 게임대로 돌아가고 로딩은 로딩대로
-        //로딩스크린 만드는 용도로 사용
-        AsyncOperation operation = SceneManager.LoadSceneAsync("Friend", LoadSceneMode.Additive);
-
-        yield return operation;
-        yield return new WaitForEndOfFrame();
-
-        //setactivescene 은 활성화 비활성화
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("Friend"));
+        canvasList[activeCanvasNum].SetActive(true);
     }
 }
