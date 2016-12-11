@@ -27,6 +27,7 @@ public class UISceneLoader : MonoBehaviour
     {
         SetCanvas(2);
     }
+
     void SetCanvas(int activeCanvasNum)
     {
         for (int i = 0; i < 5; i++)
