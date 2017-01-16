@@ -26,6 +26,7 @@ public class UISceneLoader : MonoBehaviour
     public void TapChatListBtn()
     {
         SetCanvas(2);
+        print("Hello");
     }
 
     void SetCanvas(int activeCanvasNum)
